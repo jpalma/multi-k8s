@@ -4,8 +4,7 @@ services:
 
 stages:
   - Test
-  - Build
-  - Release
+  - Build and Release Images
   - Deploy
 
 # Test:
@@ -16,7 +15,7 @@ stages:
 #     - docker run -e CI=true registry.gitlab.com/shogun-courses/multi-k8s/react-test npm test
 
 Build:
-  stage: Build
+  stage: Build and Release Images
   variables:
     REPO_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
   script:
@@ -24,10 +23,11 @@ Build:
     - docker build -t $CI_REGISTRY_IMAGE/multi-client:latest ./client
     - docker build -t $CI_REGISTRY_IMAGE/multi-server:latest ./server
     - docker build -t $CI_REGISTRY_IMAGE/multi-worker:latest ./worker
-
-Release:
-  stage: Release
-  script:
     - docker push $CI_REGISTRY_IMAGE/multi-client:latest
     - docker push $CI_REGISTRY_IMAGE/multi-server:latest
     - docker push $CI_REGISTRY_IMAGE/multi-worker:latest
+
+Deploy:
+  stage: Deploy
+  script:
+    - kubectl create secret docker-registry gitlab-registry --docker-server="$CI_REGISTRY" --docker-username="$CI_DEPLOY_USER" --docker-password="$CI_DEPLOY_PASSWORD" --docker-email="$GITLAB_USER_EMAIL" -o yaml --dry-run=client | kubectl apply -f
