@@ -17,17 +17,17 @@ before_script:
 #   script:
 #     - docker run -e CI=true registry.gitlab.com/shogun-courses/multi-k8s/react-test npm test
 
-Build:
-  stage: Build and Release Images
-  variables:
-    REPO_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
-  script:
-    - docker build -t $CI_REGISTRY_IMAGE/multi-client:$CI_COMMIT_REF_SLUG ./client
-    - docker build -t $CI_REGISTRY_IMAGE/multi-server:$CI_COMMIT_REF_SLUG ./server
-    - docker build -t $CI_REGISTRY_IMAGE/multi-worker:$CI_COMMIT_REF_SLUG ./worker
-    - docker push $CI_REGISTRY_IMAGE/multi-client:$CI_COMMIT_REF_SLUG
-    - docker push $CI_REGISTRY_IMAGE/multi-server:$CI_COMMIT_REF_SLUG
-    - docker push $CI_REGISTRY_IMAGE/multi-worker:$CI_COMMIT_REF_SLUG
+# Build:
+#   stage: Build and Release Images
+#   variables:
+#     REPO_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+#   script:
+#     - docker build -t $CI_REGISTRY_IMAGE/multi-client:$CI_COMMIT_REF_SLUG ./client
+#     - docker build -t $CI_REGISTRY_IMAGE/multi-server:$CI_COMMIT_REF_SLUG ./server
+#     - docker build -t $CI_REGISTRY_IMAGE/multi-worker:$CI_COMMIT_REF_SLUG ./worker
+#     - docker push $CI_REGISTRY_IMAGE/multi-client:$CI_COMMIT_REF_SLUG
+#     - docker push $CI_REGISTRY_IMAGE/multi-server:$CI_COMMIT_REF_SLUG
+#     - docker push $CI_REGISTRY_IMAGE/multi-worker:$CI_COMMIT_REF_SLUG
 
 Deploy:
   stage: Deploy
