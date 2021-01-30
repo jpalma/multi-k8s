@@ -29,6 +29,7 @@ build:
     - docker build -t $CI_REGISTRY_IMAGE/multi-worker:latest ./worker
 
 
+
 release:
   stage: release
   script:
