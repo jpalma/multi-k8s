@@ -22,12 +22,12 @@ Build:
   variables:
     REPO_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
   script:
-    - docker build -t $CI_REGISTRY_IMAGE/multi-client:$CI_COMMIT_REF_SLUG ./client
-    - docker build -t $CI_REGISTRY_IMAGE/multi-server:$CI_COMMIT_REF_SLUG ./server
-    - docker build -t $CI_REGISTRY_IMAGE/multi-worker:$CI_COMMIT_REF_SLUG ./worker
-    - docker push $CI_REGISTRY_IMAGE/multi-client:$CI_COMMIT_REF_SLUG
-    - docker push $CI_REGISTRY_IMAGE/multi-server:$CI_COMMIT_REF_SLUG
-    - docker push $CI_REGISTRY_IMAGE/multi-worker:$CI_COMMIT_REF_SLUG
+    # - docker build -t $CI_REGISTRY_IMAGE/multi-client:$CI_COMMIT_SHA ./client
+    - docker build -t $CI_REGISTRY_IMAGE/multi-server:$CI_COMMIT_SHA ./server
+    # - docker build -t $CI_REGISTRY_IMAGE/multi-worker:$CI_COMMIT_SHA ./worker
+    # - docker push $CI_REGISTRY_IMAGE/multi-client:$CI_COMMIT_SHA
+    - docker push $CI_REGISTRY_IMAGE/multi-server:$CI_COMMIT_SHA
+    #- docker push $CI_REGISTRY_IMAGE/multi-worker:$CI_COMMIT_SHA
 
 # Deploy:
 #   stage: Deploy
