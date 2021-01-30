@@ -1,15 +1,38 @@
-stages:
-  - Test
-  - Build and Push
-  - Deploy
+image: docker:19.03.12
+services:
+  - docker:19.03.12-dind
 
-Test:
+stages:
+  - test
+  - build
+  - release
+  - deploy
+
+test:
   stage: Test
-  image: docker:19.03.5
-  services:
-    - docker:19.03.5-dind
   before_script:
   - docker info
   - docker build -t registry.gitlab.com/shogun-courses/multi-k8s/react-test -f ./client/Dockerfile.dev ./client
   script:
     - docker run -e CI=true registry.gitlab.com/shogun-courses/multi-k8s/react-test npm test
+
+
+build:
+  stage: build
+  variables:
+    REPO_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE/multi-client:latest ./client
+    - docker build -t $CI_REGISTRY_IMAGE/multi-nginx:latest ./nginx
+    - docker build -t $CI_REGISTRY_IMAGE/multi-server:latest ./server
+    - docker build -t $CI_REGISTRY_IMAGE/multi-worker:latest ./worker
+
+
+release:
+  stage: release
+  script:
+    - docker push $CI_REGISTRY_IMAGE/multi-client:latest
+    - docker push $CI_REGISTRY_IMAGE/multi-nginx:latest
+    - docker push $CI_REGISTRY_IMAGE/multi-server:latest
+    - docker push $CI_REGISTRY_IMAGE/multi-worker:latest
