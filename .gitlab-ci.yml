@@ -17,24 +17,24 @@ before_script:
 #   script:
 #     - docker run -e CI=true registry.gitlab.com/shogun-courses/multi-k8s/react-test npm test
 
-# Build:
-#   stage: Build and Release Images
-#   variables:
-#     REPO_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
-#   script:
-#     - docker build -t $CI_REGISTRY_IMAGE/multi-client:$CI_COMMIT_REF_SLUG ./client
-#     - docker build -t $CI_REGISTRY_IMAGE/multi-server:$CI_COMMIT_REF_SLUG ./server
-#     - docker build -t $CI_REGISTRY_IMAGE/multi-worker:$CI_COMMIT_REF_SLUG ./worker
-#     - docker push $CI_REGISTRY_IMAGE/multi-client:$CI_COMMIT_REF_SLUG
-#     - docker push $CI_REGISTRY_IMAGE/multi-server:$CI_COMMIT_REF_SLUG
-#     - docker push $CI_REGISTRY_IMAGE/multi-worker:$CI_COMMIT_REF_SLUG
-
-Deploy:
-  stage: Deploy
+Build:
+  stage: Build and Release Images
+  variables:
+    REPO_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
   script:
-    - apk update  && apk add --no-cache curl
-    - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
-    - chmod +x ./kubectl && mv ./kubectl /usr/local/bin/kubectl
-    - mkdir -p $HOME/.kube
-    - echo -n $KUBE_CONFIG | base64 -d > $HOME/.kube/config
-    - kubectl create secret docker-registry gitlab-registry --docker-server="$CI_REGISTRY" --docker-username="$CI_DEPLOY_USER" --docker-password="$CI_DEPLOY_PASSWORD" --docker-email="$GITLAB_USER_EMAIL" -o yaml --dry-run=client | kubectl apply -f k8s
+    - docker build -t $CI_REGISTRY_IMAGE/multi-client:$CI_COMMIT_REF_SLUG ./client
+    - docker build -t $CI_REGISTRY_IMAGE/multi-server:$CI_COMMIT_REF_SLUG ./server
+    - docker build -t $CI_REGISTRY_IMAGE/multi-worker:$CI_COMMIT_REF_SLUG ./worker
+    - docker push $CI_REGISTRY_IMAGE/multi-client:$CI_COMMIT_REF_SLUG
+    - docker push $CI_REGISTRY_IMAGE/multi-server:$CI_COMMIT_REF_SLUG
+    - docker push $CI_REGISTRY_IMAGE/multi-worker:$CI_COMMIT_REF_SLUG
+
+# Deploy:
+#   stage: Deploy
+#   script:
+#     - apk update  && apk add --no-cache curl
+#     - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+#     - chmod +x ./kubectl && mv ./kubectl /usr/local/bin/kubectl
+#     - mkdir -p $HOME/.kube
+#     - echo -n $KUBE_CONFIG | base64 -d > $HOME/.kube/config
+#     - kubectl create secret docker-registry gitlab-registry --docker-server="$CI_REGISTRY" --docker-username="$CI_DEPLOY_USER" --docker-password="$CI_DEPLOY_PASSWORD" --docker-email="$GITLAB_USER_EMAIL" -o yaml --dry-run=client | kubectl apply -f k8s
