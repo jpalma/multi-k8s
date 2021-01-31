@@ -41,7 +41,6 @@ Deploy:
     - mkdir -p $HOME/.kube
     - echo -n $KUBE_CONFIG | base64 -d > $HOME/.kube/config
     - kubectl version
-    - kubectl config view
     - kubectl create secret docker-registry gitlab-registry --docker-server="$CI_REGISTRY" --docker-username="$CI_REGISTRY_USER" --docker-password="$CI_REGISTRY_PASSWORD" -o yaml --dry-run=client
     # - kubectl apply -f k8s
     # - kubectl set image deployments/server-deployment server=$CI_REGISTRY_IMAGE/multi-server:latest
