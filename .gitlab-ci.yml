@@ -41,12 +41,13 @@ Deploy:
     - mkdir -p $HOME/.kube
     - echo -n $KUBE_CONFIG | base64 -d > $HOME/.kube/config
     - kubectl version
-    - kubectl apply -f k8s
-    - kubectl set image deployments/server-deployment server=$CI_REGISTRY_IMAGE/multi-server:latest
-    - kubectl set image deployments/client-deployment client=$CI_REGISTRY_IMAGE/multi-client:latest
-    - kubectl set image deployments/worker-deployment worker=$CI_REGISTRY_IMAGE/multi-worker:latest
-  only:
-    - master
+    - kubectl create secret docker-registry gitlab-registry --docker-server="$CI_REGISTRY" --docker-username="$CI_DEPLOY_USER"
+    # - kubectl apply -f k8s
+    # - kubectl set image deployments/server-deployment server=$CI_REGISTRY_IMAGE/multi-server:latest
+    # - kubectl set image deployments/client-deployment client=$CI_REGISTRY_IMAGE/multi-client:latest
+    # - kubectl set image deployments/worker-deployment worker=$CI_REGISTRY_IMAGE/multi-worker:latest
+  # only:
+  #   - master
 
 
 # Deploy:
