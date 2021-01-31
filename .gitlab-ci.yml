@@ -33,18 +33,31 @@ stages:
 #     - docker push $CI_REGISTRY_IMAGE/multi-server:$CI_COMMIT_SHORT_SHA
 #     - docker push $CI_REGISTRY_IMAGE/multi-worker:$CI_COMMIT_SHORT_SHA
 
+
 Deploy:
   stage: Deploy
-  image: bitnami/kubectl
+  image: dtzar/helm-kubectl
+  before_script:
+    - apk add -u gettext
+    - kubectl create secret docker-registry regcred --docker-server=$CI_REGISTRY --docker-username="$CI_DEPLOY_USER" --docker-password="$CI_DEPLOY_PASSWORD" --docker-email="$GITLAB_USER_EMAIL" --dry-run=true -o yaml | kubectl apply -f -
+  environment:
+    name: test
+    url: test.yourapp.com
   script:
-    # - apk update  && apk add --no-cache curl
-    # - curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-    # - chmod +x ./kubectl && mv ./kubectl /usr/local/bin/kubectl
-    # - mkdir -p $HOME/.kube
-    # - echo -n $KUBE_CONFIG | base64 -d > $HOME/.kube/config
-    - kubectl version
-    - kubectl create secret docker-registry gitlab-registry --docker-server="$CI_REGISTRY" --docker-username="$CI_REGISTRY_USER" --docker-password="$CI_REGISTRY_PASSWORD" -o yaml --dry-run=client
+    - VERSION="${CI_COMMIT_TAG:-none}" envsubst < k8s.yml | kubectl apply -f -
 
+# Deploy:
+#   stage: Deploy
+#   image: bitnami/kubectl
+#   script:
+#     # - apk update  && apk add --no-cache curl
+#     # - curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+#     # - chmod +x ./kubectl && mv ./kubectl /usr/local/bin/kubectl
+#     # - mkdir -p $HOME/.kube
+#     # - echo -n $KUBE_CONFIG | base64 -d > $HOME/.kube/config
+#     - kubectl version
+#     - kubectl create secret docker-registry gitlab-registry --docker-server="$CI_REGISTRY" --docker-username="$CI_REGISTRY_USER" --docker-password="$CI_REGISTRY_PASSWORD" -o yaml --dry-run=client
+#
 
 
     # - kubectl apply -f k8s
