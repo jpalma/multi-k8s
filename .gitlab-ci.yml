@@ -7,14 +7,15 @@ stages:
   - Build and Release Images
   - Deploy
 
-before_script:
-  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+
 
 # Test:
 #   stage: Test
 #   before_script:
 #   - docker build -t registry.gitlab.com/shogun-courses/multi-k8s/react-test -f ./client/Dockerfile.dev ./client
-#   script:
+# #   script:
+# before_script:
+#   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
 #     - docker run -e CI=true registry.gitlab.com/shogun-courses/multi-k8s/react-test npm test
 
 # Build:
